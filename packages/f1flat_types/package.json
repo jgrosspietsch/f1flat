@@ -1,6 +1,6 @@
 {
   "name": "@jgrosspietsch/f1flat_types",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Classes and data validation for f1flat data",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Joe Grosspietsch <joe.grosspietsch@gmail.com>",
-  "repository":"github:jgrosspietsch/f1flat",
+  "repository": "github:jgrosspietsch/f1flat",
   "files": [
     "dist"
   ],
