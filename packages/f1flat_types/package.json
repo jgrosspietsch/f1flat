@@ -1,0 +1,21 @@
+{
+  "name": "@jgrosspietsch/f1flat_types",
+  "version": "0.0.0",
+  "description": "Classes and data validation for f1flat data",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "prepack": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Joe Grosspietsch <joe.grosspietsch@gmail.com>",
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "zod": "^3.21.4"
+  }
+}

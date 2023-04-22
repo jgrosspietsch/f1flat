@@ -1,0 +1,5 @@
+node_modules
+.vscode
+
+f1flat_data_layer*
+packages/*/dist
