@@ -11,6 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Joe Grosspietsch <joe.grosspietsch@gmail.com>",
+  "repository":"github:jgrosspietsch/f1flat",
   "files": [
     "dist"
   ],
