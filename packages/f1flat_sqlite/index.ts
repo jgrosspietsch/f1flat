@@ -50,9 +50,9 @@ try {
   const stats = await stat(path);
 
   if (stats.isDirectory()) {
-    console.log(chalk.green('Directory exists'));
+    console.log(chalk.blue('`./csv` directory exists'));
   } else {
-    console.error(chalk.red('Directory does not exist'));
+    console.error(chalk.red('`./csv` directory does not exist (run ./dl.sh first)'));
     process.exit(1);
   }
 
@@ -62,7 +62,7 @@ try {
     const fileStats = await stat(filePath);
 
     if (fileStats.isFile()) {
-      console.log(chalk.green(`${file} exists`));
+      console.log(chalk.blue(`${file} exists`));
     } else {
       console.error(chalk.red(`${file} does not exist`));
       process.exit(1);
@@ -80,7 +80,7 @@ try {
   const stats = await stat(path);
 
   if (stats.isFile()) {
-    console.log(chalk.cyan('Deleting existing database...'));
+    console.log(chalk.magenta('Deleting existing database...'));
     await rm(path);
   }
 } catch (error) {
@@ -91,12 +91,12 @@ try {
 try {
   const db = new Database(join(__dirname, 'out', 'f1.sqlite'));
 
-  console.log(chalk.cyan('Enabling foreign keys...'));
+  console.log(chalk.inverse('Enabling foreign keys...'));
   db.pragma('foreign_keys = ON');
   db.pragma('journal_mode = WAL');
   db.pragma('synchronous = NORMAL');
 
-  console.log(chalk.cyan('Creating circuits table...'));
+  console.log(chalk.bold.green('Creating circuits table...'));
   db.prepare(
     `CREATE TABLE IF NOT EXISTS circuits (
       id INTEGER PRIMARY KEY,
@@ -111,7 +111,7 @@ try {
     );`,
   ).run();
 
-  console.log(chalk.cyan('Creating constructors table...'));
+  console.log(chalk.bold.green('Creating constructors table...'));
   db.prepare(
     `CREATE TABLE IF NOT EXISTS constructors (
       id INTEGER PRIMARY KEY,
@@ -122,7 +122,7 @@ try {
     );`,
   ).run();
 
-  console.log(chalk.cyan('Creating drivers table...'));
+  console.log(chalk.bold.green('Creating drivers table...'));
   db.prepare(
     `CREATE TABLE IF NOT EXISTS drivers (
       id INTEGER PRIMARY KEY,
@@ -137,7 +137,7 @@ try {
     );`,
   ).run();
 
-  console.log(chalk.cyan('Creating seasons table...'));
+  console.log(chalk.bold.green('Creating seasons table...'));
   db.prepare(
     `CREATE TABLE IF NOT EXISTS seasons (
       year INTEGER PRIMARY KEY,
@@ -145,7 +145,7 @@ try {
     );`,
   ).run();
 
-  console.log(chalk.cyan('Creating races table...'));
+  console.log(chalk.bold.green('Creating races table...'));
   db.prepare(
     `CREATE TABLE IF NOT EXISTS races (
       id INTEGER PRIMARY KEY,
@@ -171,7 +171,7 @@ try {
     );`,
   ).run();
 
-  console.log(chalk.cyan('Creating status table...'));
+  console.log(chalk.bold.green('Creating status table...'));
   db.prepare(
     `CREATE TABLE IF NOT EXISTS status (
       id INTEGER PRIMARY KEY,
@@ -179,7 +179,7 @@ try {
     );`,
   ).run();
 
-  console.log(chalk.cyan('Creating constructor results table...'));
+  console.log(chalk.bold.green('Creating constructor results table...'));
   db.prepare(
     `CREATE TABLE IF NOT EXISTS constructor_results (
       id INTEGER PRIMARY KEY,
@@ -192,7 +192,7 @@ try {
     );`,
   ).run();
 
-  console.log(chalk.cyan('Creating constructor standings table...'));
+  console.log(chalk.bold.green('Creating constructor standings table...'));
   db.prepare(
     `CREATE TABLE IF NOT EXISTS constructor_standings (
       id INTEGER PRIMARY KEY,
@@ -207,7 +207,7 @@ try {
     );`,
   ).run();
 
-  console.log(chalk.cyan('Creating driver standings table...'));
+  console.log(chalk.bold.green('Creating driver standings table...'));
   db.prepare(
     `CREATE TABLE IF NOT EXISTS driver_standings (
       id INTEGER PRIMARY KEY,
@@ -222,7 +222,7 @@ try {
     );`,
   ).run();
 
-  console.log(chalk.cyan('Creating lap times table...'));
+  console.log(chalk.bold.green('Creating lap times table...'));
   db.prepare(
     `CREATE TABLE IF NOT EXISTS lap_times (
       race INTEGER NOT NULL,
@@ -236,7 +236,7 @@ try {
     );`,
   ).run();
 
-  console.log(chalk.cyan('Creating pit stops table...'));
+  console.log(chalk.bold.green('Creating pit stops table...'));
   db.prepare(
     `CREATE TABLE IF NOT EXISTS pit_stops (
       race INTEGER NOT NULL,
@@ -251,7 +251,7 @@ try {
     );`,
   ).run();
 
-  console.log(chalk.cyan('Creating qualifying sessions table...'));
+  console.log(chalk.bold.green('Creating qualifying sessions table...'));
   db.prepare(
     `CREATE TABLE IF NOT EXISTS qualifying_sessions (
       id INTEGER PRIMARY KEY,
@@ -269,7 +269,7 @@ try {
     );`,
   ).run();
 
-  console.log(chalk.cyan('Creating race results table...'));
+  console.log(chalk.bold.green('Creating race results table...'));
   db.prepare(
     `CREATE TABLE IF NOT EXISTS race_results (
       id INTEGER PRIMARY KEY,
@@ -296,7 +296,7 @@ try {
     );`,
   ).run();
 
-  console.log(chalk.cyan('Creating sprint results table...'));
+  console.log(chalk.bold.green('Creating sprint results table...'));
   db.prepare(
     `CREATE TABLE IF NOT EXISTS sprint_results (
       id INTEGER PRIMARY KEY,
@@ -351,7 +351,6 @@ try {
     'INSERT INTO circuits (id, ref, name, location, country, lat, lng, alt, url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
   );
 
-  let circuitCount = 0;
   for await (const record of circuitParser) {
     const circuit = circuitSchema.parse(record);
     circuitStatement.run(
@@ -365,12 +364,8 @@ try {
       circuit.alt,
       circuit.url,
     );
-    circuitCount += 1;
-    process.stdout.write(
-      chalk.bold.hex('#40E0D0')(`\r${circuitCount} records inserted`),
-    );
   }
-  process.stdout.write('\n');
+  console.log(chalk.green('Circuits data inserted into database'));
 
   // Read constructors data and insert into database
   console.log(chalk.cyan('Reading constructors data...'));
@@ -382,7 +377,6 @@ try {
     'INSERT INTO constructors (id, ref, name, nationality, url) VALUES (?, ?, ?, ?, ?)',
   );
 
-  let constructorCount = 0;
   for await (const record of constructorParser) {
     const constructor = constructorSchema.parse(record);
     constructorStatement.run(
@@ -392,12 +386,8 @@ try {
       constructor.nationality,
       constructor.url,
     );
-    constructorCount += 1;
-    process.stdout.write(
-      chalk.bold.hex('#40E0D0')(`\r${constructorCount} records inserted`),
-    );
   }
-  process.stdout.write('\n');
+  console.log(chalk.green('Constructors data inserted into database'));
 
   // Read drivers data and insert into database
   console.log(chalk.cyan('Reading drivers data...'));
@@ -419,7 +409,6 @@ try {
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   );
 
-  let driverCount = 0;
   for await (const record of driverParser) {
     const driver = driverSchema.parse(record);
     driverStatement.run(
@@ -433,12 +422,8 @@ try {
       driver.nationality,
       driver.url,
     );
-    driverCount += 1;
-    process.stdout.write(
-      chalk.bold.hex('#40E0D0')(`\r${driverCount} records inserted`),
-    );
   }
-  process.stdout.write('\n');
+  console.log(chalk.green('Drivers data inserted into database'));
 
   // Read seasons data and insert into database
   console.log(chalk.cyan('Reading seasons data...'));
@@ -448,19 +433,14 @@ try {
   );
   const seasonStatement = db.prepare('INSERT INTO seasons (year, url) VALUES (?, ?)');
 
-  let seasonCount = 0;
   for await (const record of seasonParser) {
     const season = seasonSchema.parse(record);
     seasonStatement.run(
       season.year,
       season.url,
     );
-    seasonCount += 1;
-    process.stdout.write(
-      chalk.bold.hex('#40E0D0')(`\r${seasonCount} records inserted`),
-    );
   }
-  process.stdout.write('\n');
+  console.log(chalk.green('Seasons data inserted into database'));
 
   // Read races data and insert into database
   console.log(chalk.cyan('Reading races data...'));
@@ -491,7 +471,6 @@ try {
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   );
 
-  let raceCount = 0;
   for await (const record of raceParser) {
     const race = raceSchema.parse(record);
     raceStatement.run(
@@ -514,12 +493,8 @@ try {
       race.sprint_date,
       race.sprint_time,
     );
-    raceCount += 1;
-    process.stdout.write(
-      chalk.bold.hex('#40E0D0')(`\r${raceCount} records inserted`),
-    );
   }
-  process.stdout.write('\n');
+  console.log(chalk.green('Races data inserted into database'));
 
   // Read in status data and insert into database
   console.log(chalk.cyan('Reading status data...'));
@@ -529,19 +504,14 @@ try {
   );
   const statusStatement = db.prepare('INSERT INTO status (id, status) VALUES (?, ?)');
 
-  let statusCount = 0;
   for await (const record of statusParser) {
     const status = statusSchema.parse(record);
     statusStatement.run(
       status.statusId,
       status.status,
     );
-    statusCount += 1;
-    process.stdout.write(
-      chalk.bold.hex('#40E0D0')(`\r${statusCount} records inserted`),
-    );
   }
-  process.stdout.write('\n');
+  console.log(chalk.green('Status data inserted into database'));
 
   // Read in constructor results data and insert into database
   console.log(chalk.cyan('Reading constructor results data...'));
@@ -559,7 +529,6 @@ try {
     ) VALUES (?, ?, ?, ?, ?)`,
   );
 
-  let constructorResultCount = 0;
   for await (const record of constructorResultParser) {
     const constructorResult = constructorResultSchema.parse(record);
     constructorResultStatement.run(
@@ -569,12 +538,8 @@ try {
       constructorResult.points,
       constructorResult.status,
     );
-    constructorResultCount += 1;
-    process.stdout.write(
-      chalk.bold.hex('#40E0D0')(`\r${constructorResultCount} records inserted`),
-    );
   }
-  process.stdout.write('\n');
+  console.log(chalk.green('Constructor results data inserted into database'));
 
   // Read in constructor standings data and insert into database
   console.log(chalk.cyan('Reading constructor standings data...'));
@@ -594,7 +559,6 @@ try {
     ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
   );
 
-  let constructorStandingCount = 0;
   for await (const record of constructorStandingParser) {
     const constructorStanding = constructorStandingSchema.parse(record);
     constructorStandingStatement.run(
@@ -606,14 +570,8 @@ try {
       constructorStanding.positionText,
       constructorStanding.wins,
     );
-    constructorStandingCount += 1;
-    process.stdout.write(
-      chalk.bold.hex('#40E0D0')(
-        `\r${constructorStandingCount} records inserted`,
-      ),
-    );
   }
-  process.stdout.write('\n');
+  console.log(chalk.green('Constructor standings data inserted into database'));
 
   // Read in driver standings data and insert into database
   console.log(chalk.cyan('Reading driver standings data...'));
@@ -633,7 +591,6 @@ try {
     ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
   );
 
-  let driverStandingCount = 0;
   for await (const record of driverStandingParser) {
     const driverStanding = driverStandingSchema.parse(record);
     driverStandingStatement.run(
@@ -645,12 +602,8 @@ try {
       driverStanding.positionText,
       driverStanding.wins,
     );
-    driverStandingCount += 1;
-    process.stdout.write(
-      chalk.bold.hex('#40E0D0')(`\r${driverStandingCount} records inserted`),
-    );
   }
-  process.stdout.write('\n');
+  console.log(chalk.green('Driver standings data inserted into database'));
 
   // Read in pit stops data and insert into database
   console.log(chalk.cyan('Reading pit stops data...'));
@@ -670,7 +623,6 @@ try {
     ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
   );
 
-  let pitStopCount = 0;
   for await (const record of pitStopParser) {
     const pitStop = pitStopSchema.parse(record);
     pitStopStatement.run(
@@ -682,12 +634,8 @@ try {
       pitStop.duration,
       pitStop.milliseconds,
     );
-    pitStopCount += 1;
-    process.stdout.write(
-      chalk.bold.hex('#40E0D0')(`\r${pitStopCount} records inserted`),
-    );
   }
-  process.stdout.write('\n');
+  console.log(chalk.green('Pit stops data inserted into database'));
 
   // Read in qualifying sessions data and insert into database
   console.log(chalk.cyan('Reading qualifying sessions data...'));
@@ -709,7 +657,6 @@ try {
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   );
 
-  let qualifyingSessionCount = 0;
   for await (const record of qualifyingSessionParser) {
     const qualifyingSession = qualifyingSessionSchema.parse(record);
     qualifyingSessionStatement.run(
@@ -723,14 +670,8 @@ try {
       qualifyingSession.q2,
       qualifyingSession.q3,
     );
-    qualifyingSessionCount += 1;
-    process.stdout.write(
-      chalk.bold.hex('#40E0D0')(
-        `\r${qualifyingSessionCount} records inserted`,
-      ),
-    );
   }
-  process.stdout.write('\n');
+  console.log(chalk.green('Qualifying sessions data inserted into database'));
 
   // Read in race results data and insert into database
   console.log(chalk.cyan('Reading race results data...'));
@@ -763,7 +704,6 @@ try {
       )`,
   );
 
-  let raceResultCount = 0;
   for await (const record of raceResultParser) {
     const raceResult = raceResultSchema.parse(record);
     raceResultStatement.run(
@@ -786,12 +726,8 @@ try {
       raceResult.fastestLapSpeed,
       raceResult.statusId,
     );
-    raceResultCount += 1;
-    process.stdout.write(
-      chalk.bold.hex('#40E0D0')(`\r${raceResultCount} records inserted`),
-    );
   }
-  process.stdout.write('\n');
+  console.log(chalk.green('Race results data inserted into database'));
 
   // Read in sprint results data and insert into database
   console.log(chalk.cyan('Reading sprint results data...'));
@@ -825,7 +761,6 @@ try {
       )`,
   );
 
-  let sprintResultCount = 0;
   for await (const record of sprintResultParser) {
     const sprintResult = sprintResultSchema.parse(record);
     sprintResultStatement.run(
@@ -846,12 +781,8 @@ try {
       sprintResult.fastestLapTime,
       sprintResult.statusId,
     );
-    sprintResultCount += 1;
-    process.stdout.write(
-      chalk.bold.hex('#40E0D0')(`\r${sprintResultCount} records inserted`),
-    );
   }
-  process.stdout.write('\n');
+  console.log(chalk.green('Sprint results data inserted into database'));
 
   // Read in lap times data and insert into database
   console.log(chalk.cyan('Reading lap times data...'));
@@ -870,7 +801,6 @@ try {
     ) VALUES (?, ?, ?, ?, ?, ?)`,
   );
 
-  let lapTimeCount = 0;
   for await (const record of lapTimeParser) {
     const lapTime = lapTimeSchema.parse(record);
     lapTimeStatement.run(
@@ -881,23 +811,18 @@ try {
       lapTime.time,
       lapTime.milliseconds,
     );
-    lapTimeCount += 1;
-    process.stdout.write(
-      chalk.bold.hex('#40E0D0')(`\r${lapTimeCount} records inserted`),
-    );
   }
-  process.stdout.write('\n');
+  console.log(chalk.green('Lap times data inserted into database'));
 
-  // Create indexes (19,300,352 bytes (19.9 MB on disk) pre-indexing)
-  console.log(chalk.cyan('Creating indexes...'));
+  // Create ref key indexes
+  console.log(chalk.inverse('Creating ref key indexes...'));
 
   db.prepare('CREATE INDEX circuit_ref ON circuits (ref);').run();
   db.prepare('CREATE INDEX constructor_ref ON constructors (ref);').run();
   db.prepare('CREATE INDEX driver_ref ON drivers (ref);').run();
-  // 19,329,024 bytes (19.9 MB on disk) post-indexing
 
   // Create foreign key indexes
-  console.log(chalk.cyan('Creating foreign key indexes...'));
+  console.log(chalk.inverse('Creating foreign key indexes...'));
   db.prepare('CREATE INDEX races_by_year ON races (year);').run();
   db.prepare('CREATE INDEX races_by_circuit ON races (circuit);').run();
   db.prepare(
