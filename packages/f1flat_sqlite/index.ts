@@ -6,6 +6,7 @@ import { join } from 'path';
 import chalk from 'chalk';
 import { parse } from 'csv-parse';
 import Database from 'better-sqlite3';
+import { z } from 'zod';
 
 import {
   circuitSchema,
@@ -350,9 +351,18 @@ try {
   const circuitStatement = db.prepare(
     'INSERT INTO circuits (id, ref, name, location, country, lat, lng, alt, url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
   );
+  const circuitCsvSchema = circuitSchema
+    .omit({
+      id: true,
+      ref: true,
+    })
+    .extend({
+      circuitId: z.coerce.number().int(),
+      circuitRef: z.string(),
+    });
 
   for await (const record of circuitParser) {
-    const circuit = circuitSchema.parse(record);
+    const circuit = circuitCsvSchema.parse(record);
     circuitStatement.run(
       circuit.circuitId,
       circuit.circuitRef,
@@ -376,9 +386,18 @@ try {
   const constructorStatement = db.prepare(
     'INSERT INTO constructors (id, ref, name, nationality, url) VALUES (?, ?, ?, ?, ?)',
   );
+  const constructorCsvSchema = constructorSchema
+    .omit({
+      id: true,
+      ref: true,
+    })
+    .extend({
+      constructorId: z.coerce.number().int(),
+      constructorRef: z.string(),
+    });
 
   for await (const record of constructorParser) {
-    const constructor = constructorSchema.parse(record);
+    const constructor = constructorCsvSchema.parse(record);
     constructorStatement.run(
       constructor.constructorId,
       constructor.constructorRef,
@@ -408,9 +427,18 @@ try {
       url
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   );
+  const driverCsvSchema = driverSchema
+    .omit({
+      id: true,
+      ref: true,
+    })
+    .extend({
+      driverId: z.coerce.number().int(),
+      driverRef: z.string(),
+    });
 
   for await (const record of driverParser) {
-    const driver = driverSchema.parse(record);
+    const driver = driverCsvSchema.parse(record);
     driverStatement.run(
       driver.driverId,
       driver.driverRef,
@@ -470,9 +498,18 @@ try {
       sprint_time
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   );
+  const raceCsvSchema = raceSchema
+    .omit({
+      id: true,
+      circuit: true,
+    })
+    .extend({
+      raceId: z.coerce.number().int(),
+      circuitId: z.coerce.number().int(),
+    });
 
   for await (const record of raceParser) {
-    const race = raceSchema.parse(record);
+    const race = raceCsvSchema.parse(record);
     raceStatement.run(
       race.raceId,
       race.year,
@@ -503,9 +540,16 @@ try {
     parserConfig,
   );
   const statusStatement = db.prepare('INSERT INTO status (id, status) VALUES (?, ?)');
+  const statusCsvSchema = statusSchema
+    .omit({
+      id: true,
+    })
+    .extend({
+      statusId: z.coerce.number().int(),
+    });
 
   for await (const record of statusParser) {
-    const status = statusSchema.parse(record);
+    const status = statusCsvSchema.parse(record);
     statusStatement.run(
       status.statusId,
       status.status,
@@ -528,6 +572,17 @@ try {
       status
     ) VALUES (?, ?, ?, ?, ?)`,
   );
+  const constructorResultCsvSchema = constructorResultSchema
+    .omit({
+      id: true,
+      race: true,
+      constructor: true,
+    })
+    .extend({
+      constructorResultsId: z.coerce.number().int(),
+      raceId: z.coerce.number().int(),
+      constructorId: z.coerce.number().int(),
+    });
 
   for await (const record of constructorResultParser) {
     const constructorResult = constructorResultSchema.parse(record);
@@ -558,9 +613,20 @@ try {
       wins
     ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
   );
+  const constructorStandingCsvSchema = constructorStandingSchema
+    .omit({
+      id: true,
+      race: true,
+      constructor: true,
+    })
+    .extend({
+      constructorStandingsId: z.coerce.number().int(),
+      raceId: z.coerce.number().int(),
+      constructorId: z.coerce.number().int(),
+    });
 
   for await (const record of constructorStandingParser) {
-    const constructorStanding = constructorStandingSchema.parse(record);
+    const constructorStanding = constructorStandingCsvSchema.parse(record);
     constructorStandingStatement.run(
       constructorStanding.constructorStandingsId,
       constructorStanding.raceId,
@@ -590,6 +656,17 @@ try {
       wins
     ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
   );
+  const driverStandingCsvSchema = driverStandingSchema
+    .omit({
+      id: true,
+      race: true,
+      driver: true,
+    })
+    .extend({
+      driverStandingsId: z.coerce.number().int(),
+      raceId: z.coerce.number().int(),
+      driverId: z.coerce.number().int(),
+    });
 
   for await (const record of driverStandingParser) {
     const driverStanding = driverStandingSchema.parse(record);
@@ -622,9 +699,18 @@ try {
       milliseconds
     ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
   );
+  const pitStopCsvSchema = pitStopSchema
+    .omit({
+      race: true,
+      driver: true,
+    })
+    .extend({
+      raceId: z.coerce.number().int(),
+      driverId: z.coerce.number().int(),
+    });
 
   for await (const record of pitStopParser) {
-    const pitStop = pitStopSchema.parse(record);
+    const pitStop = pitStopCsvSchema.parse(record);
     pitStopStatement.run(
       pitStop.raceId,
       pitStop.driverId,
@@ -656,9 +742,22 @@ try {
       q3
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   );
+  const qualifyingSessionCsvSchema = qualifyingSessionSchema
+    .omit({
+      id: true,
+      race: true,
+      driver: true,
+      constructor: true,
+    })
+    .extend({
+      qualifyId: z.coerce.number().int(),
+      raceId: z.coerce.number().int(),
+      driverId: z.coerce.number().int(),
+      constructorId: z.coerce.number().int(),
+    });
 
   for await (const record of qualifyingSessionParser) {
-    const qualifyingSession = qualifyingSessionSchema.parse(record);
+    const qualifyingSession = qualifyingSessionCsvSchema.parse(record);
     qualifyingSessionStatement.run(
       qualifyingSession.qualifyId,
       qualifyingSession.raceId,
@@ -703,9 +802,24 @@ try {
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
       )`,
   );
+  const raceResultCsvSchema = raceResultSchema
+    .omit({
+      id: true,
+      race: true,
+      driver: true,
+      constructor: true,
+      status: true,
+    })
+    .extend({
+      resultId: z.coerce.number().int(),
+      raceId: z.coerce.number().int(),
+      driverId: z.coerce.number().int(),
+      constructorId: z.coerce.number().int(),
+      statusId: z.coerce.number().int(),
+    });
 
   for await (const record of raceResultParser) {
-    const raceResult = raceResultSchema.parse(record);
+    const raceResult = raceResultCsvSchema.parse(record);
     raceResultStatement.run(
       raceResult.resultId,
       raceResult.raceId,
@@ -760,9 +874,24 @@ try {
         ?, ?, ?, ?
       )`,
   );
+  const sprintResultCsvSchema = sprintResultSchema
+    .omit({
+      id: true,
+      race: true,
+      driver: true,
+      constructor: true,
+      status: true,
+    })
+    .extend({
+      resultId: z.coerce.number().int(),
+      raceId: z.coerce.number().int(),
+      driverId: z.coerce.number().int(),
+      constructorId: z.coerce.number().int(),
+      statusId: z.coerce.number().int(),
+    });
 
   for await (const record of sprintResultParser) {
-    const sprintResult = sprintResultSchema.parse(record);
+    const sprintResult = sprintResultCsvSchema.parse(record);
     sprintResultStatement.run(
       sprintResult.resultId,
       sprintResult.raceId,
@@ -800,9 +929,18 @@ try {
       milliseconds
     ) VALUES (?, ?, ?, ?, ?, ?)`,
   );
+  const lapTimeCsvSchema = lapTimeSchema
+    .omit({
+      race: true,
+      driver: true,
+    })
+    .extend({
+      raceId: z.coerce.number().int(),
+      driverId: z.coerce.number().int(),
+    });
 
   for await (const record of lapTimeParser) {
-    const lapTime = lapTimeSchema.parse(record);
+    const lapTime = lapTimeCsvSchema.parse(record);
     lapTimeStatement.run(
       lapTime.raceId,
       lapTime.driverId,

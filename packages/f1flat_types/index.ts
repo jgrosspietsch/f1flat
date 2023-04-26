@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 export const circuitSchema = z.object({
-  circuitId: z.coerce.number().int(),
-  circuitRef: z.string(),
+  id: z.coerce.number().int(),
+  ref: z.string(),
   name: z.string(),
   location: z.string(),
   country: z.string(),
@@ -15,8 +15,8 @@ export const circuitSchema = z.object({
 export type Circuit = z.infer<typeof circuitSchema>;
 
 export const constructorSchema = z.object({
-  constructorId: z.coerce.number(),
-  constructorRef: z.string(),
+  id: z.coerce.number().int(),
+  ref: z.string(),
   name: z.string(),
   nationality: z.string(),
   url: z.string(),
@@ -25,8 +25,8 @@ export const constructorSchema = z.object({
 export type Constructor = z.infer<typeof constructorSchema>;
 
 export const driverSchema = z.object({
-  driverId: z.coerce.number().int(),
-  driverRef: z.string(),
+  id: z.coerce.number().int(),
+  ref: z.string(),
   number: z.coerce.number().int().nullable(),
   code: z.string().nullable(),
   forename: z.string(),
@@ -46,10 +46,10 @@ export const seasonSchema = z.object({
 export type Season = z.infer<typeof seasonSchema>;
 
 export const raceSchema = z.object({
-  raceId: z.coerce.number().int(),
+  id: z.coerce.number().int(),
   year: z.coerce.number().int().gte(1950),
   round: z.coerce.number().int().gte(1),
-  circuitId: z.coerce.number(),
+  circuit: z.coerce.number(),
   name: z.string(),
   date: z.string(),
   time: z.string().nullable(),
@@ -69,16 +69,16 @@ export const raceSchema = z.object({
 export type Race = z.infer<typeof raceSchema>;
 
 export const statusSchema = z.object({
-  statusId: z.coerce.number().int(),
+  id: z.coerce.number().int(),
   status: z.string(),
 });
 
 export type Status = z.infer<typeof statusSchema>;
 
 export const constructorResultSchema = z.object({
-  constructorResultsId: z.coerce.number().int(),
-  raceId: z.coerce.number().int(),
-  constructorId: z.coerce.number(),
+  id: z.coerce.number().int(),
+  race: z.coerce.number().int(),
+  constructor: z.coerce.number(),
   points: z.coerce.number(),
   status: z.string().nullable(),
 });
@@ -86,9 +86,9 @@ export const constructorResultSchema = z.object({
 export type ConstructorResult = z.infer<typeof constructorResultSchema>;
 
 export const constructorStandingSchema = z.object({
-  constructorStandingsId: z.coerce.number(),
-  raceId: z.coerce.number().int(),
-  constructorId: z.coerce.number().int(),
+  id: z.coerce.number(),
+  race: z.coerce.number().int(),
+  constructor: z.coerce.number().int(),
   points: z.coerce.number(),
   position: z.coerce.number().int(),
   positionText: z.string(),
@@ -98,9 +98,9 @@ export const constructorStandingSchema = z.object({
 export type ConstructorStanding = z.infer<typeof constructorStandingSchema>;
 
 export const driverStandingSchema = z.object({
-  driverStandingsId: z.coerce.number().int(),
-  raceId: z.coerce.number().int(),
-  driverId: z.coerce.number().int(),
+  id: z.coerce.number().int(),
+  race: z.coerce.number().int(),
+  driver: z.coerce.number().int(),
   points: z.coerce.number(),
   position: z.coerce.number(),
   positionText: z.string(),
@@ -110,8 +110,8 @@ export const driverStandingSchema = z.object({
 export type DriverStanding = z.infer<typeof driverStandingSchema>;
 
 export const pitStopSchema = z.object({
-  raceId: z.coerce.number().int(),
-  driverId: z.coerce.number().int(),
+  race: z.coerce.number().int(),
+  driver: z.coerce.number().int(),
   stop: z.coerce.number().int(),
   lap: z.coerce.number().int(),
   time: z.string(),
@@ -122,10 +122,10 @@ export const pitStopSchema = z.object({
 export type PitStop = z.infer<typeof pitStopSchema>;
 
 export const qualifyingSessionSchema = z.object({
-  qualifyId: z.coerce.number().int(),
-  raceId: z.coerce.number().int(),
-  driverId: z.coerce.number().int(),
-  constructorId: z.coerce.number().int(),
+  id: z.coerce.number().int(),
+  race: z.coerce.number().int(),
+  driver: z.coerce.number().int(),
+  constructor: z.coerce.number().int(),
   number: z.coerce.number().int(),
   position: z.coerce.number().int(),
   q1: z.string().nullable(),
@@ -136,10 +136,10 @@ export const qualifyingSessionSchema = z.object({
 export type QualifyingSession = z.infer<typeof qualifyingSessionSchema>;
 
 export const raceResultSchema = z.object({
-  resultId: z.coerce.number().int(),
-  raceId: z.coerce.number().int(),
-  driverId: z.coerce.number().int(),
-  constructorId: z.coerce.number().int(),
+  id: z.coerce.number().int(),
+  race: z.coerce.number().int(),
+  driver: z.coerce.number().int(),
+  constructor: z.coerce.number().int(),
   number: z.coerce.number().int().nullable(),
   grid: z.coerce.number().int(),
   position: z.coerce.number().int().nullable(),
@@ -153,16 +153,16 @@ export const raceResultSchema = z.object({
   rank: z.coerce.number().int().nullable(),
   fastestLapTime: z.string().nullable(),
   fastestLapSpeed: z.coerce.number().nullable(),
-  statusId: z.string(),
+  status: z.string(),
 });
 
 export type RaceResult = z.infer<typeof raceResultSchema>;
 
 export const sprintResultSchema = z.object({
-  resultId: z.coerce.number().int(),
-  raceId: z.coerce.number().int(),
-  driverId: z.coerce.number().int(),
-  constructorId: z.coerce.number().int(),
+  id: z.coerce.number().int(),
+  race: z.coerce.number().int(),
+  driver: z.coerce.number().int(),
+  constructor: z.coerce.number().int(),
   number: z.coerce.number().int(),
   grid: z.coerce.number().int(),
   position: z.coerce.number().int().nullable(),
@@ -174,14 +174,14 @@ export const sprintResultSchema = z.object({
   milliseconds: z.coerce.number().int().nullable(),
   fastestLap: z.coerce.number().int().nullable(),
   fastestLapTime: z.string().nullable(),
-  statusId: z.coerce.number().int(),
+  status: z.coerce.number().int(),
 });
 
 export type SprintResult = z.infer<typeof sprintResultSchema>;
 
 export const lapTimeSchema = z.object({
-  raceId: z.coerce.number().int(),
-  driverId: z.coerce.number().int(),
+  race: z.coerce.number().int(),
+  driver: z.coerce.number().int(),
   lap: z.coerce.number().int(),
   position: z.coerce.number().int(),
   time: z.string(),

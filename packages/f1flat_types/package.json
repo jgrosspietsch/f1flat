@@ -1,6 +1,6 @@
 {
   "name": "@jgrosspietsch/f1flat_types",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Classes and data validation for f1flat data",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
