@@ -13,7 +13,7 @@
   "author": "Joe Grosspietsch <joe.grosspietsch@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@jgrosspietsch/f1flat_types": "^0.0.0",
+    "@jgrosspietsch/f1flat_types": "^0.0.2",
     "better-sqlite3": "^8.3.0",
     "chalk": "^5.2.0",
     "csv-parse": "^5.3.8",

@@ -585,7 +585,7 @@ try {
     });
 
   for await (const record of constructorResultParser) {
-    const constructorResult = constructorResultSchema.parse(record);
+    const constructorResult = constructorResultCsvSchema.parse(record);
     constructorResultStatement.run(
       constructorResult.constructorResultsId,
       constructorResult.raceId,
@@ -618,11 +618,13 @@ try {
       id: true,
       race: true,
       constructor: true,
+      position_text: true,
     })
     .extend({
       constructorStandingsId: z.coerce.number().int(),
       raceId: z.coerce.number().int(),
       constructorId: z.coerce.number().int(),
+      positionText: z.string(),
     });
 
   for await (const record of constructorStandingParser) {
@@ -661,15 +663,17 @@ try {
       id: true,
       race: true,
       driver: true,
+      position_text: true,
     })
     .extend({
       driverStandingsId: z.coerce.number().int(),
       raceId: z.coerce.number().int(),
       driverId: z.coerce.number().int(),
+      positionText: z.string(),
     });
 
   for await (const record of driverStandingParser) {
-    const driverStanding = driverStandingSchema.parse(record);
+    const driverStanding = driverStandingCsvSchema.parse(record);
     driverStandingStatement.run(
       driverStanding.driverStandingsId,
       driverStanding.raceId,
@@ -809,6 +813,11 @@ try {
       driver: true,
       constructor: true,
       status: true,
+      position_text: true,
+      position_order: true,
+      fastest_lap: true,
+      fastest_lap_time: true,
+      fastest_lap_speed: true,
     })
     .extend({
       resultId: z.coerce.number().int(),
@@ -816,6 +825,11 @@ try {
       driverId: z.coerce.number().int(),
       constructorId: z.coerce.number().int(),
       statusId: z.coerce.number().int(),
+      positionText: z.string(),
+      positionOrder: z.coerce.number().int(),
+      fastestLap: z.coerce.number().int().nullable(),
+      fastestLapTime: z.string().nullable(),
+      fastestLapSpeed: z.string().nullable(),
     });
 
   for await (const record of raceResultParser) {
@@ -881,6 +895,10 @@ try {
       driver: true,
       constructor: true,
       status: true,
+      position_text: true,
+      position_order: true,
+      fastest_lap: true,
+      fastest_lap_time: true,
     })
     .extend({
       resultId: z.coerce.number().int(),
@@ -888,6 +906,10 @@ try {
       driverId: z.coerce.number().int(),
       constructorId: z.coerce.number().int(),
       statusId: z.coerce.number().int(),
+      positionText: z.string(),
+      positionOrder: z.coerce.number().int(),
+      fastestLap: z.coerce.number().int().nullable(),
+      fastestLapTime: z.string().nullable(),
     });
 
   for await (const record of sprintResultParser) {

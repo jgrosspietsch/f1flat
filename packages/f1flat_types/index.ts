@@ -91,7 +91,7 @@ export const constructorStandingSchema = z.object({
   constructor: z.coerce.number().int(),
   points: z.coerce.number(),
   position: z.coerce.number().int(),
-  positionText: z.string(),
+  position_text: z.string(),
   wins: z.coerce.number().int(),
 });
 
@@ -103,7 +103,7 @@ export const driverStandingSchema = z.object({
   driver: z.coerce.number().int(),
   points: z.coerce.number(),
   position: z.coerce.number(),
-  positionText: z.string(),
+  position_text: z.string(),
   wins: z.coerce.number().int(),
 });
 
@@ -143,16 +143,16 @@ export const raceResultSchema = z.object({
   number: z.coerce.number().int().nullable(),
   grid: z.coerce.number().int(),
   position: z.coerce.number().int().nullable(),
-  positionText: z.string(),
-  positionOrder: z.coerce.number().int(),
+  position_text: z.string(),
+  position_order: z.coerce.number().int(),
   points: z.coerce.number(),
   laps: z.coerce.number().int(),
   time: z.string().nullable(),
   milliseconds: z.coerce.number().int().nullable(),
-  fastestLap: z.coerce.number().int().nullable(),
+  fastest_lap: z.coerce.number().int().nullable(),
   rank: z.coerce.number().int().nullable(),
-  fastestLapTime: z.string().nullable(),
-  fastestLapSpeed: z.coerce.number().nullable(),
+  fastest_lap_time: z.string().nullable(),
+  fastest_lap_speed: z.coerce.number().nullable(),
   status: z.string(),
 });
 
@@ -166,14 +166,14 @@ export const sprintResultSchema = z.object({
   number: z.coerce.number().int(),
   grid: z.coerce.number().int(),
   position: z.coerce.number().int().nullable(),
-  positionText: z.string(),
-  positionOrder: z.coerce.number().int(),
+  position_text: z.string(),
+  position_order: z.coerce.number().int(),
   points: z.coerce.number(),
   laps: z.coerce.number().int(),
   time: z.string().nullable(),
   milliseconds: z.coerce.number().int().nullable(),
-  fastestLap: z.coerce.number().int().nullable(),
-  fastestLapTime: z.string().nullable(),
+  fastest_lap: z.coerce.number().int().nullable(),
+  fastest_lap_time: z.string().nullable(),
   status: z.coerce.number().int(),
 });
 
