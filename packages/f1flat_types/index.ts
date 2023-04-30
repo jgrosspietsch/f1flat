@@ -153,7 +153,7 @@ export const raceResultSchema = z.object({
   rank: z.coerce.number().int().nullable(),
   fastest_lap_time: z.string().nullable(),
   fastest_lap_speed: z.coerce.number().nullable(),
-  status: z.string(),
+  status: z.coerce.number().int(),
 });
 
 export type RaceResult = z.infer<typeof raceResultSchema>;
