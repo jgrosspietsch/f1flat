@@ -14,6 +14,7 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   ignorePatterns: ['node_modules', '.eslintrc.cjs'],
   rules: {
+    'no-new': 'off',
     'no-useless-constructor': 'off',
     '@typescript-eslint/no-useless-constructor': 'off',
     'import/prefer-default-export': 'off',
